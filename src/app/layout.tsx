@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Manrope} from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/provider/theme-provider";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const manrope = Manrope({
   variable: "--font-geist-sans",
@@ -20,22 +21,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body 
-      suppressHydrationWarning
-        className={` ${manrope.variable} antialiased`}
-      >
-        <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-              {children}
-          </ThemeProvider>
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body 
+        suppressHydrationWarning
+          className={` ${manrope.variable} antialiased`}
+        >
+          <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+                {children}
+            </ThemeProvider>
 
-        
-      </body>
-    </html>
+          
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

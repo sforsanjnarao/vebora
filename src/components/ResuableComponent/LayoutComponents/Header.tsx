@@ -7,6 +7,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Zap } from 'lucide-react';
 import PurpleIcon from '../PurpleIcon/intex';
+import CreateWebinarButton from '../CreateWebinarButton';
 type Props = {user:User}
 
 const Header = ({user}: Props) => {
@@ -33,7 +34,7 @@ const Header = ({user}: Props) => {
                 </PurpleIcon>
                 {/* TODO: Add strips subscription and create webinar button */}
                 {/* {user.subscription ? '':''} */}
-                
+                <CreateWebinarButton/>
             </div>
         </div>
     )

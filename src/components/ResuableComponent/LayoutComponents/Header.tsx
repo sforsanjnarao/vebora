@@ -31,6 +31,9 @@ const Header = ({user}: Props) => {
                 <PurpleIcon>
                     <Zap  />
                 </PurpleIcon>
+                {/* TODO: Add strips subscription and create webinar button */}
+                {/* {user.subscription ? '':''} */}
+                
             </div>
         </div>
     )

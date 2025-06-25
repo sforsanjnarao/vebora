@@ -4,7 +4,7 @@ import React from 'react'
 import {sidebarData} from "@/lib/data"
 import {  Triangle } from 'lucide-react'
 import Link from 'next/link'
-import { Tooltip, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { UserButton } from '@clerk/nextjs'
 
 
@@ -32,6 +32,9 @@ function Sidebar(props: Props) {
                                         <item.icon className={`w-4 h-4 ${pathname.includes(item.link) ? '': "opacity-80"}`} />
                                     </Link>
                                 </TooltipTrigger>
+                                <TooltipContent side='right'>
+                                    <span className='text-sm'>{item.title}</span>
+                                </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
                     ))

@@ -1,9 +1,12 @@
+"use client";
 import { User } from '@/generated/prisma';
-import { trace } from 'node:console';
-import { usePathname, useRouter } from 'next/navigation';
+// import { trace } from 'node:console';
+import {  useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Zap } from 'lucide-react';
+import PurpleIcon from '../PurpleIcon/intex';
 type Props = {user:User}
 
 const Header = ({user}: Props) => {
@@ -23,6 +26,12 @@ const Header = ({user}: Props) => {
                 {pathname.split('/')[1]}
                </div> 
             ) }
+            {/* TODO build stripe subscription and create webinars */}
+            <div className='flex gap-6 items-center flex-wrap'>
+                <PurpleIcon>
+                    <Zap  />
+                </PurpleIcon>
+            </div>
         </div>
     )
 }

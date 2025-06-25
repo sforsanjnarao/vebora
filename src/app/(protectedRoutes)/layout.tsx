@@ -21,7 +21,7 @@ const Layout=async ({ children }:Props) => {
             <Sidebar/>
             <div className='flex flex-col w-full h-screen overflow-auto px-4 scrollbar-hide container mx-auto'>
                 {/* HEADER */}
-                <Header/>
+                <Header user={userExist.user} />
                 {children}
             </div>
         </div>

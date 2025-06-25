@@ -32,3 +32,24 @@ export const sidebarData = [
         link:"/settings"
     }
 ]
+
+export const onBoardingSteps = [
+    {
+        id: 1,
+        title: "Create a webinar",
+        completed: false,
+        link: ""
+    },
+    {
+        id: 2,
+        title: "Get leads",
+        completed: false,
+        link: ""
+    },
+    {
+        id: 3,
+        title: "Conversion status",
+        completed: false,
+        link: ""
+    }
+];

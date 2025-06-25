@@ -1,7 +1,8 @@
 
 
 import { onAuthenticateUser } from '@/actions/auth';
-import Sidebar  from '@/components/ReusableComponets/LayoutComponents/Sidebar';
+import Header from '@/components/ResuableComponent/LayoutComponents/Header';
+import Sidebar  from '@/components/ResuableComponent/LayoutComponents/Sidebar';
 import { redirect } from 'next/navigation';
 import React from 'react';
 
@@ -20,6 +21,7 @@ const Layout=async ({ children }:Props) => {
             <Sidebar/>
             <div className='flex flex-col w-full h-screen overflow-auto px-4 scrollbar-hide container mx-auto'>
                 {/* HEADER */}
+                <Header/>
                 {children}
             </div>
         </div>

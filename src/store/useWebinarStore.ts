@@ -6,7 +6,7 @@ type WebinarFormState = {
     basicInfo: {
         webinarName?: string
         description?: string
-        date?: string
+        date?: Date
         time?: string
         timeFormat?: 'AM' | 'PM'
     }

@@ -1,4 +1,4 @@
-import { Attendee, Webinar, User } from '@prisma/client'
+import { Attendee, Webinar, User } from '@/generated/prisma' ///'@prisma/client'
 
 export type ValidationErrors = Record<string, string>
 
@@ -10,7 +10,7 @@ export type ValidationResult = {
 export const validateBasicInfo = (data: {
   webinarName?: string
   description?: string
-  date?: Date | string
+  date?: Date 
   time?: string
   timeFormat?: 'AM' | 'PM'
 }): ValidationResult => {
@@ -67,7 +67,7 @@ export const validateCTA = (data: {
 }
 
 export const validateAdditionalInfo = (data: {
-  lockChat?: boolean
+  lockCta?: boolean
   couponCode?: string
   couponEnabled?: boolean
 }): ValidationResult => {

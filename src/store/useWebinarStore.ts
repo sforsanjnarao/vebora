@@ -1,5 +1,5 @@
 import { CtaTypeEnum } from "@/generated/prisma";
-import { validateCTA, ValidationErrors, validateBasicInfo, ValidationResult } from "@/lib/type";
+import { validateCTA, ValidationErrors, validateBasicInfo, validateAdditionalInfo } from "@/lib/type";  //ValidationResult from "@/lib/type";
 import { create } from "zustand";
 type WebinarFormState = {
     // create webinar modal type
@@ -57,6 +57,7 @@ type WebinarStore = {
 
     updateCtaField: <K extends keyof WebinarFormState['cta']>(
         field:K, 
+        // “Only allow real keys from the cta object.”
         value: WebinarFormState['cta'][K]
     )=> void
     updateAdditionalInfoField: <K extends keyof WebinarFormState['additionalInfo']>(
@@ -99,7 +100,7 @@ const initialValidation: ValidityState = {
     additionalInfo: { valid: false,errors: {}}
 }
 
-export const useWebinarStore = create<WebinarStore>((set) => ({
+export const useWebinarStore = create<WebinarStore>((set,get) => ({
     isModalOpen: false,
     isComplete: false,
     isSubmitting: false,
@@ -109,12 +110,12 @@ export const useWebinarStore = create<WebinarStore>((set) => ({
 
     setModalOpen: (open:boolean) => set({ isModalOpen: open }),
     setComplete: (complete:boolean) => set({ isComplete: complete }),
-    setSubmitting: (submitting:boolean) => set({ isSubmitting: submitting})
+    setSubmitting: (submitting:boolean) => set({ isSubmitting: submitting}),
 
-    upadateBasicInfoField:(field, value)=>{
+    updateBasicInfoField:(field, value)=>{
         set((state)=>{
-            const newBasicInfo = {...StaticRange.formData.basicInfo, [field]: value};
-            const validationResult = validateBasicInfo(newBasicInfo);
+            const newBasicInfo = {...state.formData.basicInfo, [field]: value};
+            const validationResult = validateBasicInfo(newBasicInfo);             
 
             return {
                 formData: {
@@ -128,8 +129,8 @@ export const useWebinarStore = create<WebinarStore>((set) => ({
                 }
             };
         })
-    }
-    updateCtaField:(field, value)=> {
+    },
+    updateCtaField: (field, value)=> {
         set((state) => {
             const newCta = { ...state.formData.cta, [field]: value };
             const validationResult = validateCTA(newCta);
@@ -148,5 +149,54 @@ export const useWebinarStore = create<WebinarStore>((set) => ({
         
     },
 
-    upd
+    updateAdditionalInfoField:(field, value)=> set((state) => {
+        const newAdditionalInfo = { ...state.formData.additionalInfo, [field]: value };
+        const validationResult = validateAdditionalInfo(newAdditionalInfo);
+        return {
+            formData: {
+                ...state.formData,
+                additionalInfo: newAdditionalInfo
+            },
+            validation: {
+                ...state.validation,
+                additionalInfo: validationResult
+            }
+        };
+            
+    }),
+    validateStep: (stepId: keyof WebinarFormState)=>{
+        const { formData}=get();
+        let validationResult;
+        switch(stepId) {
+            case 'basicInfo':
+                validationResult = validateBasicInfo(formData.basicInfo);
+                break;
+            case 'cta':
+                validationResult = validateCTA(formData.cta);
+                break;
+            case 'additionalInfo':
+                validationResult = validateAdditionalInfo(formData.additionalInfo);
+                break;
+             
+        }
+        set((state) => {
+            return {
+                validation: {
+                    ...state.validation,
+                    [stepId]: validationResult
+                }
+            }
+                
+        })
+        return validationResult.valid;
+    } ,
+    getStepValidationErrors:(stepId: keyof WebinarFormState)=> {
+        return get().validation[stepId].errors;
+    },
+    resetForm: () => set({
+        isComplete: false,
+        isSubmitting: false,
+        formData: initialState,
+        validation: initialValidation,
+    }),
 }));

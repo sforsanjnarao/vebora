@@ -10,7 +10,7 @@ export type ValidationResult = {
 export const validateBasicInfo = (data: {
   webinarName?: string
   description?: string
-  date?: Date
+  date?: Date | string
   time?: string
   timeFormat?: 'AM' | 'PM'
 }): ValidationResult => {

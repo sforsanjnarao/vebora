@@ -13,7 +13,7 @@ export const sidebarData = [
         id:2,
         title:"Webinar",
         icon:Webcam,
-        link:"/ebinar"
+        link:"/webinars"
     },
     {
         id:3,

@@ -2,7 +2,6 @@
 import React from 'react'
 import { useWebinarStore } from '@/store/useWebinarStore'
 import { Label } from '@/components/ui/label'
-import { error } from 'console'
 import { Input } from '@/components/ui/input'
 import clsx from 'clsx'
 import { Textarea } from '@/components/ui/textarea'
@@ -14,9 +13,8 @@ import { Calendar } from '@/components/ui/calendar'
 import { toast } from 'sonner'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
-type Props = {}
 
-function BasicInfoStep(props: Props) {
+function BasicInfoStep() {
   const {formData, updateBasicInfoField, getStepValidationErrors}=useWebinarStore()
   const { webinarName,description, date, time, timeFormat } = formData.basicInfo
 

@@ -65,6 +65,9 @@ type WebinarStore = {
         value: WebinarFormState['additionalInfo'][K]
     )=> void
 
+    addTag: (tag: string) => void
+    removeTag: (tag: string) => void
+
     validateStep:(stepId: keyof WebinarFormState) => boolean
     getStepValidationErrors: (stepId: keyof WebinarFormState) => ValidationErrors 
 
@@ -132,13 +135,13 @@ export const useWebinarStore = create<WebinarStore>((set,get) => ({
     },
     updateCTAField: (field, value)=> {
         set((state) => {
-            const newCta = { ...state.formData.cta, [field]: value };
-            const validationResult = validateCTA(newCta);
+            const newCTA = { ...state.formData.cta, [field]: value };
+            const validationResult = validateCTA(newCTA);
 
             return {
                 formData: {
                     ...state.formData,
-                    cta: newCta
+                    cta: newCTA
                 },
                 validation: {
                     ...state.validation,
@@ -199,4 +202,31 @@ export const useWebinarStore = create<WebinarStore>((set,get) => ({
         formData: initialState,
         validation: initialValidation,
     }),
+
+    addTag: (tag: string) => set((state) => {
+        const newTags = [...(state.formData.cta.tags || []), tag];
+        const newCTA = { ...state.formData.cta, tags: newTags };
+        
+        return{
+            formData: {
+                ...state.formData,
+                cta: newCTA
+            },
+            
+        }
+    }),
+    removeTag: (tagToRemove)=>{
+        set((state) => {
+            const newTags = (state.formData.cta.tags || []).filter(tag => tag !== tagToRemove);
+            const newCTA = { ...state.formData.cta, tags: newTags };
+            
+            return {
+                formData: {
+                    ...state.formData,
+                    cta: newCTA
+                },
+                
+            }
+        })
+    }
 }));

@@ -4,6 +4,8 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import clsx from 'clsx'
 import { X } from 'lucide-react'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { CtaTypeEnum } from '@/generated/prisma'
 
 type Props = {}
 
@@ -22,6 +24,18 @@ function CTAStep({}: Props) {
             setTagInput('')
         }
     }
+    const handleSelectCTAType=(value: string) => {
+        updateCTAField('ctaType', value as CtaTypeEnum)  
+    //     value as CtaTypeEnum: this is a type assertion — telling TypeScript:
+	// “I know value is one of the valid members of the CtaTypeEnum enum.” 
+    }
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        const { name, value } = e.target
+        updateCTAField(name as keyof typeof formData.cta, value)
+    }
+    
 
 
 
@@ -94,6 +108,31 @@ function CTAStep({}: Props) {
                 {errors.tags && (
                 <p className='text-red-400 text-sm mt-1'>{errors.tags}</p>
                 )}
+            </div>
+
+            <div className='space-y-2 w-full'>
+                <Label>CTA Types</Label>
+                <Tabs
+                    defaultValue={CtaTypeEnum.BOOK_A_CALL}
+                    className='w-full'
+                >
+                    <TabsList className='w-full bg-transparent'>
+                        <TabsTrigger
+                            value={CtaTypeEnum.BOOK_A_CALL}
+                            className='w-1/2 data-[state=active]:bg-backgroung/50'
+                            onClick={()=>handleSelectCTAType(CtaTypeEnum.BOOK_A_CALL)}
+                        >
+                            Book a Call
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value={CtaTypeEnum.BUY_NOW}
+                            className='w-1/2'
+                            onClick={()=>handleSelectCTAType(CtaTypeEnum.BUY_NOW)}
+                        >
+                            Buy Now
+                        </TabsTrigger>
+                    </TabsList>
+                </Tabs>
             </div>
     </div>
   )

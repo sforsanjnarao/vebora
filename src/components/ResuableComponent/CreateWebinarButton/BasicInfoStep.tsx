@@ -8,10 +8,11 @@ import clsx from 'clsx'
 import { Textarea } from '@/components/ui/textarea'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
-import { CalendarIcon, Clock } from 'lucide-react'
+import { CalendarIcon, Clock, Upload } from 'lucide-react'
 import { format } from 'date-fns'
 import { Calendar } from '@/components/ui/calendar'
 import { toast } from 'sonner'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 type Props = {}
 
@@ -37,6 +38,10 @@ function BasicInfoStep(props: Props) {
         console.log('Error: Selected date cannot be in the past.')
     }
   }
+}
+    const handleTimeFormatChange=(value:string)=>{
+      updateBasicInfoField('timeFormat', value as 'AM' | 'PM')
+    }
 
   return (
     <div className='space-y-6'>
@@ -147,10 +152,43 @@ function BasicInfoStep(props: Props) {
                 )}
               />
             </div>
-            
+            <Select
+              value={timeFormat || 'AM'}
+              onValueChange={handleTimeFormatChange}
+            >
+              <SelectTrigger className='w-20 !bg-background/50 border border-input'>
+                <SelectValue placeholder="AM" />
+              </SelectTrigger>
+              <SelectContent className='!bg-background border border-input'>
+                <SelectItem value='AM'>AM</SelectItem>
+                <SelectItem value='PM'>PM</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
+
+          {errors.time && (
+            <p className='text-red-400 text-sm mt-1'>{errors.time}</p>
+          )}
         </div>
        </div>
+
+          <div className='flex items-center gap-2 text-sm text-gray-400 mt-4'>
+            <div className='flex items-center'>
+              <Upload className='h-4 w-4 mr-2'/>
+              Uploading a video makes this webinar pre-recorded
+            </div>
+            <Button
+              variant={'outline'}
+              className='ml-auto relative hover:bg-background border border-input'
+            >
+              Upload File
+              <Input
+                className='absolute inset-0 opacity-0 cursor-pointer'
+                type='file'
+              />
+            </Button>
+          </div>
+
     </div>
   )
 }

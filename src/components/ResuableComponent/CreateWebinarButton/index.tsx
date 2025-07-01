@@ -7,6 +7,7 @@ import { PlusIcon } from 'lucide-react'
 import React,{useState} from 'react'
 import MultiStepForm from './MultiStepForm'
 import BasicInfoStep from './BasicInfoStep'
+import CTAStep from './CTAStep'
 
 type Props = {}
 
@@ -16,11 +17,22 @@ function CreateWebinarButton({}: Props) {
     const {isModalOpen, setModalOpen,isComplete,setComplete}=useWebinarStore()
     const [webinarLink, setWebinarLink] = useState<string>('');
     const steps = [
+        // {
+        //     id: 'basicInfo',
+        //     title: 'Basic Information',
+        //     description: 'Please fill out the standard info needed for your webinar',
+        //     component: <BasicInfoStep />
+        // },
         {
-            id: 'basicInfo',
-            title: 'Basic Information',
-            description: 'Please fill out the standard info needed for your webinar',
-            component: <BasicInfoStep />
+            id:'cta',
+            title: 'CTA',
+            description:' Please provide the end-point for your customers through your website',
+            component:(
+                <CTAStep
+                    assistants={[]}
+                    stripeProducts={[]}
+                />
+            )
         }
     ]
     const handleComplete = (webinarId:string) => {

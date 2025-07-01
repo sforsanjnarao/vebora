@@ -55,7 +55,7 @@ type WebinarStore = {
         value: WebinarFormState['basicInfo'][K]
     )=> void
 
-    updateCtaField: <K extends keyof WebinarFormState['cta']>(
+    updateCTAField: <K extends keyof WebinarFormState['cta']>(
         field:K, 
         // “Only allow real keys from the cta object.”
         value: WebinarFormState['cta'][K]
@@ -130,7 +130,7 @@ export const useWebinarStore = create<WebinarStore>((set,get) => ({
             };
         })
     },
-    updateCtaField: (field, value)=> {
+    updateCTAField: (field, value)=> {
         set((state) => {
             const newCta = { ...state.formData.cta, [field]: value };
             const validationResult = validateCTA(newCta);

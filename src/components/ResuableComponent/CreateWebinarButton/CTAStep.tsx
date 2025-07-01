@@ -30,7 +30,7 @@ function CTAStep({}: Props) {
 	// “I know value is one of the valid members of the CtaTypeEnum enum.” 
     }
     const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+        e: React.ChangeEvent<HTMLInputElement>
     ) => {
         const { name, value } = e.target
         updateCTAField(name as keyof typeof formData.cta, value)

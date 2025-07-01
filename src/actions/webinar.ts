@@ -71,7 +71,7 @@ export const createWebinar = async (formData: WebinarFormState) => {
                 ctaType: formData.cta.ctaType,
                 aiAgentId: formData.cta.aiAgent || null,
                 priceId: formData.cta.priceId || null,
-                lockChat: formData.additionalInfo.lockCta || false,
+                lockChat: formData.additionalInfo.lockChat || false,
                 couponCode: formData.additionalInfo.couponEnabled ? formData.additionalInfo.couponCode : null,
                 couponEnabled: formData.additionalInfo.couponEnabled || false,
                 presenterId: presenterId,

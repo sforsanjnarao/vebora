@@ -18,7 +18,7 @@ export type WebinarFormState = {
         priceId?: string
     }
     additionalInfo: {
-        lockCta?: boolean
+        lockChat?: boolean
         couponCode?: string
         couponEnabled?: boolean
     }
@@ -91,7 +91,7 @@ const initialState: WebinarFormState = {
         priceId: ''
     },
     additionalInfo: {
-        lockCta: false,
+        lockChat: false,
         couponCode: '',
         couponEnabled: false
     }

@@ -67,7 +67,7 @@ export const validateCTA = (data: {
 }
 
 export const validateAdditionalInfo = (data: {
-  lockCta?: boolean
+  lockChat?: boolean
   couponCode?: string
   couponEnabled?: boolean
 }): ValidationResult => {

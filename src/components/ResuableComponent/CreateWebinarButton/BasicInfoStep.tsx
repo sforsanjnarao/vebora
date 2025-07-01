@@ -115,13 +115,17 @@ function BasicInfoStep(props: Props) {
                 {date ? format(date, 'PPP'):"Select date"}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className='w-auto p-0 !bg-background/50 border border-input'>
+            <PopoverContent className='w-auto p-0 !bg-background/50 border border-input'
+              onOpenAutoFocus={(e) => {
+                e.preventDefault(); 
+              }}
+            >
               <Calendar
                 mode='single'
                 selected={date}
                 onSelect={handleDateChange}
                 initialFocus
-                className='bg-backgroung'
+                className='bg-background'
                 disabled={(date)=>{
                   const today = new Date();
                   return date < today;

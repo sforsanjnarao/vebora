@@ -1,7 +1,7 @@
 import { CtaTypeEnum } from "@/generated/prisma";
 import { validateCTA, ValidationErrors, validateBasicInfo, validateAdditionalInfo } from "@/lib/type";  //ValidationResult from "@/lib/type";
 import { create } from "zustand";
-type WebinarFormState = {
+export type WebinarFormState = {
     // create webinar modal type
     basicInfo: {
         webinarName?: string

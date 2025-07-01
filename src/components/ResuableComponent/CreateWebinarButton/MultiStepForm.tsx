@@ -1,7 +1,14 @@
 import React, {useState} from 'react'
 import { useWebinarStore } from '@/store/useWebinarStore'
 import {AnimatePresence, motion} from 'framer-motion'
-import { Check } from 'lucide-react'
+import { AlertCircle, Check, ChevronRight, Loader2 } from 'lucide-react'
+import { Separator } from '@/components/ui/separator'
+import { Button } from '@/components/ui/button'
+import clsx from 'clsx'
+import { createWebinar } from '@/actions/webinar'
+import { useRouter } from 'next/navigation'
+import { toast } from "sonner";
+
 
 type Step={
     id: string
@@ -16,16 +23,68 @@ type Props = {
 }
 
 function MultiStepForm({steps, onComplete}: Props) {
-    const {formData, validateSteps, isSubmitting, setSubmitting, setModalOpen}=useWebinarStore()
+    const {formData, validateStep, isSubmitting, setSubmitting, setModalOpen}=useWebinarStore()
+    const [isLoading, setIsLoading]=useState(false)
+    const router=useRouter() 
+
 
     const [currentStepIndex, setCurrentStepIndex]=useState(0)
     const [completedSteps, setCompletedSteps]=useState<string[]>([])
     const [validationErrors, setValidationErrors]=useState<string | null>(null)
     // const [completedSteps, setCompletedSteps]=useState<string[]>([])
 
-    const currentSteps=steps[currentStepIndex]
-    const idFirstStep = currentStepIndex === 0
+    const currentStep=steps[currentStepIndex]
+    const isFirstStep = currentStepIndex === 0
     const isLastStep = currentStepIndex=== steps.length - 1
+
+    const handleBack=()=>{
+        if(isFirstStep) {
+            setModalOpen(false)
+        }
+        else {
+            setCurrentStepIndex(prev => prev - 1) //in video it's setCurrentStepIndex(currentStepIndex - 1)
+            setValidationErrors(null)
+        }
+        
+    }
+
+    const handleNext=async ()=>{
+        setValidationErrors(null)
+
+        const isValid = validateStep(currentStep.id as keyof typeof formData)
+        if(!isValid){
+            setValidationErrors('please fill in all required fields')
+        }
+
+        if(!completedSteps.includes(currentStep.id)) {
+            setCompletedSteps(prev => [...prev, currentStep.id])
+        }
+        if(isLastStep){
+            try{
+                setSubmitting(true)
+                const result= await createWebinar(formData)
+                 if(result.status === 200 && result.webinarId){
+                    toast.success('Your webinar has been created successfully!')
+                    onComplete(result.webinarId)
+                 }
+                 else{
+                    toast.error(result.message || 'Your webinar has not been created successfully!')
+                    setValidationErrors(result.message)
+                 }
+                 router.refresh()
+            }catch(error) {
+                console.error('Error creating webinar:', error)
+                toast.success('Failed to create webinar. Please try again.')
+                setValidationErrors('Failed to create webinar. Please try again.')
+            }finally{
+                setSubmitting(false)
+            }
+
+        }else{
+            setCurrentStepIndex(currentStepIndex + 1)
+        }
+    }
+
   return (
     <div className='flex flex-col justify-center items-center bg-[#27272A]/20 border border-border rounded-3xl overflow-hidden max-w-6xl mx-auto backdrop-blur-[106px]'>
         <div className='flex items-center justify-start'>
@@ -78,7 +137,36 @@ function MultiStepForm({steps, onComplete}: Props) {
                                             </AnimatePresence>
                                         </motion.div>
 
-                                        
+                                        {index <steps.length - 1 && (
+                                            <div className='absolute top-8 left-4 w-0.5 h-16 bg-gray-700 overflow-hidden'>
+                                                <motion.div
+                                                    initial={{ height: isPast || isCompleted ? '100%' : '0%' }}
+                                                    
+                                                    animate={{
+                                                        height: isPast || isCompleted ? '100%' : '0%',
+                                                        backgroundColor: 'rgb(147,51,234)', 
+                                                    }}
+                                                    
+                                                    transition={{duration:0.5, ease: 'easeInOut'}}
+                                                    className='w-full h-full'
+                                                />
+
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className='pt-1'>
+                                        <motion.h3 
+                                            animate={{
+                                                color: isCurrent || isCompleted ? "rgb(255,255,255)" : "rgb(156,163,175)",
+                                            }}
+                                            transition={{ duration: 0.3 }}
+                                            className='font-medium'
+                                        >
+                                            {step.title}
+                                        </motion.h3>
+                                        <p className='text-sm text-gray-500'>
+                                            {step.description}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -86,6 +174,67 @@ function MultiStepForm({steps, onComplete}: Props) {
                     })}
                 </div>
             </div>
+            <Separator 
+                orientation='vertical'
+                className='data-[orientation=vertical]:h-1/2'
+            />
+            <div className='w-full md:w-2/3'>
+                <AnimatePresence mode='wait'>
+                    <motion.div
+                        key={currentStep.id}
+                        initial={{x:20, opacity:0}}
+                        animate={{x:0, opacity:1}}
+                        exit={{x:-20, opacity:0}}
+                        transition={{duration:0.3}}
+                        className='p-6'
+                    >
+                        <div className='mb-6'>
+                            <h2 className='text-xl font-semibold'>{currentStep.title}</h2>
+                            <p className='text-gray-400'>{currentStep.description}</p>
+                        </div>
+                            {/* Render the current step */}
+                        {currentStep.component}
+
+                        {validationErrors &&(
+                            <div className='mt-4 p-3 bg-red-900/30 border border-red-800 rounded-md flex items-start gap-2 text-red-300'>
+                                <AlertCircle className='h-5 w-5 mt-0.5 flex-shrink-0'/>
+                                <p>{validationErrors}</p>
+                            </div>
+                        )}
+                    </motion.div>
+                </AnimatePresence>
+            </div>
+        </div>
+        <div className='w-full p-6 flex justify-between'>
+            <Button
+                variant='outline'
+                onClick={handleBack}
+                disabled={isSubmitting}
+                className={clsx(
+                    'border-gray-700 text-white hover:bg-gray-800',
+                    isFirstStep && 'opacity-50 cursor-not-allowed'
+                )}
+            >
+                {isFirstStep ? 'Cancel' : 'Back'}
+            </Button>
+            <Button
+                onClick={handleNext}
+                disabled={isSubmitting}
+            >
+                {isLastStep ?(
+                    isSubmitting ? (
+                        <>
+                            <Loader2 className='animate-spin'/>
+                            Creating...
+                        </>
+                    ):(
+                        'Complete'
+                    )
+                ):(
+                    'Next'
+                )}
+                {isLastStep && <ChevronRight className='ml-1 h-4 w-4'/>}
+            </Button>
         </div>
     </div>
   )

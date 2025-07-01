@@ -37,6 +37,7 @@ function BasicInfoStep(props: Props) {
         toast.error('Selected date cannot be in the past.')
         console.log('Error: Selected date cannot be in the past.')
     }
+    updateBasicInfoField('date', newDate)
   }
 }
     const handleTimeFormatChange=(value:string)=>{

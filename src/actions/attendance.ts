@@ -3,8 +3,9 @@
 import { AttendedTypeEnum, CtaTypeEnum } from "@/generated/prisma";
 import { prismaClient } from "@/lib/prismaClient";
 import { AttendanceData } from "@/lib/type";
+// import { revalidatePath } from "next/cache";
 
-const getWebinarAttendance = async (
+export const getWebinarAttendance = async (
     webinarId: string,
     options:{
         includeUsers?: boolean;
@@ -69,12 +70,44 @@ const getWebinarAttendance = async (
                     continue; 
                 }
                 const queryType=
-                webinar.ctaType === CtaTypeEnum.BOOK_A_CALL && type === AttendedTypeEnum.BREAKOUT_ROOM ? AttendedTypeEnum.ADDED_TO_CART : type
+                webinar.ctaType === CtaTypeEnum.BOOK_A_CALL && 
+                type === AttendedTypeEnum.BREAKOUT_ROOM
+                 ? AttendedTypeEnum.ADDED_TO_CART 
+                 : type
 
                 if(result[type].count > 0){
-                    
+                    const attendances= await prismaClient.attendance.findMany({
+                        where:{
+                            webinarId,
+                            attendedType:queryType,
+                        },
+                        include:{
+                            user: true,
+                        },
+                        take: options.userLimit, //limit the no. of user
+
+                        orderBy:{
+                            joinedAt:"desc" //most recent first
+                        },
+                    })
+                    result[type].users=attendances.map((attendance)=>({
+                        id: attendance.user.id,
+                        name: attendance.user.name,
+                        email: attendance.user.email,
+                        attendedAt: attendance.joinedAt,
+                        stripeConnectId: null,
+                        callStatus: attendance.user.callStatus
+                    }))
                 }
             }
+        }
+
+        // revalidatePath(`/webinars/${webinarId}/pipelines`)
+        return{
+            success:true,
+            data: result,
+            ctaType:webinar,
+            webinarTag: webinar.tags || []
         }
             
     }catch (error) {
